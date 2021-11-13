@@ -69,10 +69,10 @@ export class ParcelMachineComponent implements OnInit {
       id: this.id,
       code: this.code,
       city: this.city,
-      capacity: this.capacity
+      capacity: this.capacity,
     }    
     this._parcelMachineService.update(updatedParcelMachine).subscribe((parcelMachine) => {
-      this.parcelMachines = this.parcelMachines.map(parcelMachine => parcelMachine.id != updatedParcelMachine.id ? parcelMachine : updatedParcelMachine);
+      this.parcelMachines = this.parcelMachines.map(m => m.id != updatedParcelMachine.id ? m : parcelMachine);
       this.parcelMachines.sort((a, b) => (a.code > b.code) ? 1 : -1);
       this.clearForm();
       this.displayUpdateButton = false;

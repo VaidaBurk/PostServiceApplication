@@ -22,10 +22,6 @@ namespace PostServiceBackend.Services
         public async Task<List<ParcelMachineGetDto>> GetAllAsync()
         {
             List<ParcelMachine> parcelMachines = await _parcelMachineRepository.GetAllAsync();
-            //return _mapper.Map<List<ParcelMachineDtoForRendering>>(parcelMachines);
-
-            //---
-
             List<ParcelMachineGetDto> mappedMachines = new();
             foreach (var machine in parcelMachines)
             {
