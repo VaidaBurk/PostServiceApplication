@@ -39,7 +39,7 @@ namespace PostServiceBackend.Services
                     Info = parcel.Info,
                     ParcelMachineId = parcel.ParcelMachineId != null ? parcel.ParcelMachineId : null,
                     ParcelMachineCode = parcel.ParcelMachineId != null ?
-                        parcelMachines.FirstOrDefault(m => m.Id == parcel.ParcelMachineId).Code.ToString() : ""
+                        parcelMachines.FirstOrDefault(m => m.Id == parcel.ParcelMachineId).Code.ToString() : "Update needed!"
                 };
                 mappedParcels.Add(mappedParcel);
             }

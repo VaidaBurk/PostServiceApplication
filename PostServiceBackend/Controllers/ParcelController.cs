@@ -47,8 +47,7 @@ namespace PostServiceBackend.Controllers
         {
             try
             {
-                await _parcelService.UpdateAsync(id, updatedParcel);
-                return NoContent();
+                return Ok(await _parcelService.UpdateAsync(id, updatedParcel));
             }
             catch (ArgumentException exception)
             {
@@ -68,6 +67,12 @@ namespace PostServiceBackend.Controllers
             {
                 return StatusCode(404, exception.Message);
             }
+        }
+
+        [HttpGet("ParcelMachine/{id}")]
+        public async Task<ActionResult> GetFilteredByParcelMachineId(int id)
+        {
+            return Ok(await _parcelService.GetFilteredByParcelMachineId(id));
         }
     }
 }

@@ -1,0 +1,73 @@
+<div class="container border rounded-2 mt-3 p-3">
+    <div class="container">
+        <div class="d-grid gap-2 mb-2">
+            <button *ngIf="hideFormButton" class="btn btn-warning mb-3 mt-2" type="button" data-bs-toggle="collapse"
+                data-bs-target="#parcelMachineContainer" aria-expanded="true" aria-controls="parcelMachineContainer" (click)="toggleButtons()">
+                Hide New Parcel Machine Input Form
+            </button>
+            <button *ngIf="showFormButton" class="btn btn-warning mb-3 mt-2" type="button" data-bs-toggle="collapse"
+                data-bs-target="#parcelMachineContainer" aria-expanded="true" aria-controls="parcelMachineContainer" (click)="toggleButtons()">
+                Show New Parcel Machine Input Form
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- form -->
+        <div class="container show" id="parcelMachineContainer">
+            <div class="row g-2">
+                <input hidden type="number" class="form-control" id="parcelMachineId" [(ngModel)]="id">
+                <div class="col-md-3">
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" id="codeInput" placeholder="Code" [(ngModel)]="code">
+                        <label for="codeInput">Code</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" id="cityInput" placeholder="City" [(ngModel)]="city">
+                        <label for="cityInput">City</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating mb-2">
+                        <input type="number" class="form-control form-control-sm" id="capacityInput"
+                            placeholder="Capacity" [(ngModel)]="capacity">
+                        <label for="capacityInput">Capacity</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-4">
+                <button type="button" class="btn btn-warning" (click)="add()" *ngIf="displaySaveButton">Add</button>
+                <button type="button" class="btn btn-warning" (click)="saveUpdated()" *ngIf="displayUpdateButton">Update parcel machine info</button>
+            </div>
+        </div>
+
+        <!-- table -->
+        <table class="table table-hover table-bordered">
+            <thead class="table-warning">
+                <tr>
+                    <th scope="col" class="ps-3 pe-3">Code</th>
+                    <th scope="col" class="ps-3 pe-3 text-center">City</th>
+                    <th scope="col" class="ps-3 pe-3 text-center">Capacity</th>
+                    <th scope="col" class="ps-3 pe-3"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="p-3" *ngFor="let machine of parcelMachines">
+                    <td class="ps-3 pe-3">{{ machine.code }}</td>
+                    <td class="ps-3 pe-3 text-center">{{ machine.city }}</td>
+                    <td class="ps-3 pe-3 text-center">{{ machine.capacity }}</td>
+                    <td class="ps-3 pe-3 text-center">
+                        <button type="button" class="btn btn-outline-danger btn-sm me-2"
+                            (click)="delete(machine.id)">Delete</button>
+                        <button type="button" class="btn btn-outline-warning btn-sm"
+                            (click)="update(machine)">Update</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
