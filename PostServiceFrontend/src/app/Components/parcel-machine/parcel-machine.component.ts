@@ -15,6 +15,7 @@ export class ParcelMachineComponent implements OnInit {
   public code: string;
   public city: string;
   public capacity: number;
+  public freeSpaces: number;
 
   public displaySaveButton = true;
   public displayUpdateButton = false;
@@ -38,8 +39,10 @@ export class ParcelMachineComponent implements OnInit {
       city: this.city,
       capacity: this.capacity
     }
+    
     this._parcelMachineService.create(newParcelMachine).subscribe((parcelMachine) => {
       this.parcelMachines.push(parcelMachine);
+      this.parcelMachines.sort((a, b) => (a.code > b.code) ? 1 : -1);
       this.clearForm();
     });
   }
@@ -68,9 +71,9 @@ export class ParcelMachineComponent implements OnInit {
       city: this.city,
       capacity: this.capacity
     }    
-    this._parcelMachineService.update(updatedParcelMachine).subscribe((m) => {
-      this.parcelMachines = this.parcelMachines.map(m => m.id != updatedParcelMachine.id ? m : updatedParcelMachine);
-      this.parcelMachines.sort((a, b) => (a.code < b.code) ? 1 : -1);
+    this._parcelMachineService.update(updatedParcelMachine).subscribe((parcelMachine) => {
+      this.parcelMachines = this.parcelMachines.map(parcelMachine => parcelMachine.id != updatedParcelMachine.id ? parcelMachine : updatedParcelMachine);
+      this.parcelMachines.sort((a, b) => (a.code > b.code) ? 1 : -1);
       this.clearForm();
       this.displayUpdateButton = false;
       this.displaySaveButton = true;

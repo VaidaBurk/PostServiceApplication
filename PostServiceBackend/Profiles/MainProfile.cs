@@ -8,7 +8,10 @@ namespace PostServiceBackend.Profiles
     {
         public MainProfile()
         {
-            CreateMap<ParcelMachine, ParcelMachineDtoForRendering>();
+            CreateMap<ParcelMachine, ParcelMachineDtoForRendering>()
+                .ForMember(dest => dest.FreeSpaces, opt =>
+                    opt.MapFrom((src, dest, destMember, context) => context.Items["FreeSpaces"]));
+
             CreateMap<ParcelMachineAddDto, ParcelMachine>();
 
             CreateMap<ParcelAddDto, Parcel>();

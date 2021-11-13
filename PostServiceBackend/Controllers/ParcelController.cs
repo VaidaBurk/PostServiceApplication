@@ -39,7 +39,14 @@ namespace PostServiceBackend.Controllers
         [HttpPost]
         public async Task<ActionResult> Add(ParcelAddDto newParcel)
         {
-            return Ok(await _parcelService.AddAsync(newParcel));
+            try
+            {
+                return Ok(await _parcelService.AddAsync(newParcel));
+            }
+            catch (ArgumentException exception)
+            {
+                return StatusCode(500, exception.Message);
+            }
         }
 
         [HttpPut("{id}")]
@@ -51,7 +58,7 @@ namespace PostServiceBackend.Controllers
             }
             catch (ArgumentException exception)
             {
-                return StatusCode(404, exception.Message);
+                return StatusCode(500, exception.Message);
             }
         }
 

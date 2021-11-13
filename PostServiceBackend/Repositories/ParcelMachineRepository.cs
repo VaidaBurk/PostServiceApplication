@@ -18,12 +18,12 @@ namespace PostServiceBackend.Repositories
 
         public async Task<List<ParcelMachine>> GetAllAsync()
         {
-            return await _context.ParcelMachines.OrderBy(m => m.Code).ToListAsync();
+            return await _context.ParcelMachines.Include(m => m.Parcels).OrderBy(m => m.Code).ToListAsync();
         }
 
         public async Task<ParcelMachine> GetByIdAsync(int id)
         {
-            return await _context.ParcelMachines.FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.ParcelMachines.Include(m => m.Parcels).FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<ParcelMachine> AddAsync(ParcelMachine parcelMachine)

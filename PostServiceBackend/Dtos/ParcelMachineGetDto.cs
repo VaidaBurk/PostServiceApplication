@@ -1,6 +1,6 @@
 ﻿namespace PostServiceBackend.Dtos
 {
-    public class ParcelMachineDtoForRendering
+    public class ParcelMachineGetDto
     {
         public int Id { get; set; }
         public string Code { get; set; }

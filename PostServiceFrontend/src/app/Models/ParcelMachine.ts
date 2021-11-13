@@ -2,5 +2,6 @@ export interface ParcelMachine {
     id?: number,
     code: string,
     city: string,
-    capacity: number
+    capacity: number,
+    freeSpaces?: number
 }

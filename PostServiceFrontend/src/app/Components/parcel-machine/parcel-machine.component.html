@@ -51,6 +51,7 @@
                     <th scope="col" class="ps-3 pe-3">Code</th>
                     <th scope="col" class="ps-3 pe-3 text-center">City</th>
                     <th scope="col" class="ps-3 pe-3 text-center">Capacity</th>
+                    <th scope="col" class="ps-3 pe-3 text-center">Free spaces</th>
                     <th scope="col" class="ps-3 pe-3"></th>
                 </tr>
             </thead>
@@ -59,6 +60,7 @@
                     <td class="ps-3 pe-3">{{ machine.code }}</td>
                     <td class="ps-3 pe-3 text-center">{{ machine.city }}</td>
                     <td class="ps-3 pe-3 text-center">{{ machine.capacity }}</td>
+                    <td class="ps-3 pe-3 text-center">{{ machine.freeSpaces }}</td>
                     <td class="ps-3 pe-3 text-center">
                         <button type="button" class="btn btn-outline-danger btn-sm me-2"
                             (click)="delete(machine.id)">Delete</button>

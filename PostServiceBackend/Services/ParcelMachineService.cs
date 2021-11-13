@@ -19,10 +19,27 @@ namespace PostServiceBackend.Services
             _mapper = mapper;
         }
 
-        public async Task<List<ParcelMachineDtoForRendering>> GetAllAsync()
+        public async Task<List<ParcelMachineGetDto>> GetAllAsync()
         {
             List<ParcelMachine> parcelMachines = await _parcelMachineRepository.GetAllAsync();
-            return _mapper.Map<List<ParcelMachineDtoForRendering>>(parcelMachines);
+            //return _mapper.Map<List<ParcelMachineDtoForRendering>>(parcelMachines);
+
+            //---
+
+            List<ParcelMachineGetDto> mappedMachines = new();
+            foreach (var machine in parcelMachines)
+            {
+                ParcelMachineGetDto mappedMachine = new()
+                {
+                    Id = machine.Id,
+                    Code = machine.Code,
+                    City = machine.City,
+                    Capacity = machine.Capacity,
+                    FreeSpaces = (machine.Capacity - machine.Parcels.Count)
+                };
+                mappedMachines.Add(mappedMachine);
+            }
+            return mappedMachines;
         }
 
         public async Task<ParcelMachineDtoForRendering> GetByIdAsync(int id)
@@ -38,7 +55,7 @@ namespace PostServiceBackend.Services
         public async Task<ParcelMachineDtoForRendering> AddAsync(ParcelMachineAddDto newParcelMachine)
         {
             var parcelMachineWithId = await _parcelMachineRepository.AddAsync(_mapper.Map<ParcelMachine>(newParcelMachine));
-            return _mapper.Map<ParcelMachineDtoForRendering>(parcelMachineWithId);
+            return _mapper.Map<ParcelMachineDtoForRendering>(parcelMachineWithId, opt => opt.Items["FreeSpaces"] = parcelMachineWithId.Capacity);
         }
 
         public async Task<ParcelMachineDtoForRendering> UpdateAsync(int id, ParcelMachineUpdateDto updatedParcelMachine)
@@ -54,8 +71,8 @@ namespace PostServiceBackend.Services
             parcelMachine.City = updatedParcelMachine.City;
 
             await _parcelMachineRepository.UpdateAsync(parcelMachine);
-
-            return _mapper.Map<ParcelMachineDtoForRendering>(parcelMachine);
+            var freeSpaces = await GetFreeSpacesInMachine(id);
+            return _mapper.Map<ParcelMachineDtoForRendering>(parcelMachine, opt => opt.Items["FreeSpaces"] = freeSpaces);
         }
 
         public async Task RemoveAsync(int id)
@@ -67,6 +84,12 @@ namespace PostServiceBackend.Services
             }
 
             await _parcelMachineRepository.RemoveAsync(parcelMachine);
+        }
+
+        public async Task<int> GetFreeSpacesInMachine(int machineId)
+        {
+            var machine = await _parcelMachineRepository.GetByIdAsync(machineId);
+            return machine.Capacity - machine.Parcels.Count;
         }
     }
 }

@@ -53,7 +53,10 @@ export class ParcelComponent implements OnInit {
     this._parcelService.create(newParcel).subscribe((parcel) => {
       this.parcels.push(parcel);
       this.clearForm();
-    })
+    },
+    (error) => {
+      alert(error.error)
+    });
   }
 
   public delete(id: number): void {
@@ -85,9 +88,14 @@ export class ParcelComponent implements OnInit {
       parcelMachineId: this.parcelMachineId
     }   
     this._parcelService.update(updatedParcel).subscribe((parcel) => {
-      this.parcels = this.parcels.map(p => p.id != updatedParcel.id ? p : parcel);
-      this.parcels.sort((a, b) => (a.weight > a.weight) ? 1 : -1);
-    })
+      this.parcels = this.parcels.map(p => p.id != updatedParcel.id ? p : parcel).sort((a, b) => (a.weight > b.weight) ? 1 : -1);
+      this.clearForm();
+      this.displayUpdateButton = false;
+      this.displaySaveButton = true;
+    },
+    (error) => {
+      alert(error.error)
+    });
   }
 
   public filter(filterParcelsId: number): void {

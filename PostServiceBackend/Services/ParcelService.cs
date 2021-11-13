@@ -12,20 +12,22 @@ namespace PostServiceBackend.Services
     public class ParcelService
     {
         private readonly ParcelRepository _parcelRepository;
-        private readonly ParcelMachineRepository _ParcelMachineRepository;
+        private readonly ParcelMachineRepository _parcelMachineRepository;
+        private readonly ParcelMachineService _parcelMachineService;
         private readonly IMapper _mapper;
 
-        public ParcelService(ParcelRepository parcelRepository, ParcelMachineRepository parcelMachineRepository, IMapper mapper)
+        public ParcelService(ParcelRepository parcelRepository, ParcelMachineRepository parcelMachineRepository, ParcelMachineService parcelMachineService, IMapper mapper)
         {
             _parcelRepository = parcelRepository;
-            _ParcelMachineRepository = parcelMachineRepository;
+            _parcelMachineRepository = parcelMachineRepository;
+            _parcelMachineService = parcelMachineService;
             _mapper = mapper;
         }
 
         public async Task<List<ParcelDtoForRendering>> GetAllAsync()
         {
             List<Parcel> parcels = await _parcelRepository.GetAllAsync();
-            List<ParcelMachine> parcelMachines = await _ParcelMachineRepository.GetAllAsync();
+            List<ParcelMachine> parcelMachines = await _parcelMachineRepository.GetAllAsync();
             List<ParcelDtoForRendering> mappedParcels = new();
 
             foreach (Parcel parcel in parcels)
@@ -58,10 +60,16 @@ namespace PostServiceBackend.Services
 
         public async Task<ParcelDtoForRendering> AddAsync(ParcelAddDto newParcel)
         {
-            ParcelMachine parcelMachine = await _ParcelMachineRepository.GetByIdAsync((int)newParcel.ParcelMachineId);
+            ParcelMachine parcelMachine = await _parcelMachineRepository.GetByIdAsync((int)newParcel.ParcelMachineId);
             if (parcelMachine == null)
             {
                 throw new ArgumentException($"Parcel machine id {newParcel.ParcelMachineId} does not exist.");
+            }
+
+            var freeSpacesInMachine = await _parcelMachineService.GetFreeSpacesInMachine(parcelMachine.Id);
+            if (freeSpacesInMachine < 1)
+            {
+                throw new ArgumentException($"Parcel machine {parcelMachine.Code} is full. Please select another machine.");
             }
 
             Parcel parcelWithId = await _parcelRepository.AddAsync(_mapper.Map<Parcel>(newParcel));
@@ -77,10 +85,16 @@ namespace PostServiceBackend.Services
                 throw new ArgumentException($"Id {id} does not exist.");
             }
 
-            ParcelMachine parcelMachine = await _ParcelMachineRepository.GetByIdAsync((int)updatedParcel.ParcelMachineId);
+            ParcelMachine parcelMachine = await _parcelMachineRepository.GetByIdAsync((int)updatedParcel.ParcelMachineId);
             if (parcelMachine == null)
             {
                 throw new ArgumentException($"Parcel machine id {updatedParcel.ParcelMachineId} does not exist.");
+            }
+
+            var freeSpacesInMachine = await _parcelMachineService.GetFreeSpacesInMachine(parcelMachine.Id);
+            if (freeSpacesInMachine < 1)
+            {
+                throw new ArgumentException($"Parcel machine {parcelMachine.Code} is full. Please select another machine.");
             }
 
             parcel.Weight = updatedParcel.Weight;
@@ -110,7 +124,7 @@ namespace PostServiceBackend.Services
             if (parcelMachineId != 0)
             {
                 List<Parcel> filteredParcels = await _parcelRepository.GetFilteredByParcelMachineId(parcelMachineId);
-                ParcelMachine parcelMachine = await _ParcelMachineRepository.GetByIdAsync(parcelMachineId);
+                ParcelMachine parcelMachine = await _parcelMachineRepository.GetByIdAsync(parcelMachineId);
 
                 return _mapper.Map<List<ParcelDtoForRendering>>(filteredParcels, opt => opt.Items["ParcelMachineCode"] = parcelMachine.Code);
             }

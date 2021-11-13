@@ -47,8 +47,7 @@ namespace PostServiceBackend.Controllers
         {
             try
             {
-                await _parcelMachineService.UpdateAsync(id, updatedParcelMachine);
-                return NoContent();
+                return Ok(await _parcelMachineService.UpdateAsync(id, updatedParcelMachine));
             }
             catch (ArgumentException exception)
             {
